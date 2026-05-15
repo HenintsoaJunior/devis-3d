@@ -38,7 +38,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.demoServiceRoleKe
 ADMIN_BEARER_TOKEN=demo-admin-token
 
 # Admin dashboard password
-ADMIN_PASSWORD=demoPassword123
+ADMIN_PASSWORD=admin
 
 # Resend email API key
 RESEND_API_KEY=re_demoApiKey123
