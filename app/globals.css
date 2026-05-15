@@ -108,6 +108,29 @@ body {
   cursor: not-allowed;
 }
 
+.btn-loading { cursor: wait; opacity: 0.85; }
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btn-spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+/* Spinner dark variant (outline buttons) */
+.btn-outline-primary .btn-spinner,
+.btn-secondary .btn-spinner {
+  border-color: rgba(0, 0, 0, 0.15);
+  border-top-color: currentColor;
+}
+
 .btn-sm { padding: 8px 12px; }
 .btn-lg { padding: 12px 18px; font-size: var(--font-size-base); }
 
@@ -239,10 +262,118 @@ body {
 .professional-table td { padding: 12px; border-top: 1px solid var(--border); font-size: var(--font-size-sm); }
 .professional-table tbody tr:hover { background: color-mix(in oklab, var(--bg-card), #000 2%); }
 
-.pagination-section { display: flex; justify-content: space-between; align-items: center; gap: var(--spacing-md); }
-.pagination-buttons { display: flex; gap: var(--spacing-sm); }
-.page-btn { min-width: 34px; height: 34px; border-radius: var(--border-radius-md); border: 1px solid var(--border); background: var(--bg-card); }
-.page-btn.active { border-color: var(--primary); color: var(--primary); }
+/* ── ERP Pagination ───────────────────────────────────────────── */
+.erp-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  padding: 10px var(--spacing-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.erp-pagination__summary {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.erp-pagination__page-indicator {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.erp-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.erp-pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.erp-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-main);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.erp-page-btn:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--primary), #fff 90%);
+  border-color: color-mix(in oklab, var(--primary), #fff 60%);
+  color: var(--primary);
+}
+
+.erp-page-btn--active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 1px 4px color-mix(in oklab, var(--primary), #000 30%);
+}
+
+.erp-page-btn--active:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.erp-page-btn--icon {
+  color: var(--text-muted);
+  border-color: var(--border);
+  background: var(--bg-card);
+}
+
+.erp-page-btn--icon:hover:not(:disabled) {
+  color: var(--primary);
+  border-color: color-mix(in oklab, var(--primary), #fff 50%);
+  background: color-mix(in oklab, var(--primary), #fff 92%);
+}
+
+.erp-page-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.erp-page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 32px;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  user-select: none;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 540px) {
+  .erp-pagination { justify-content: center; }
+  .erp-pagination__page-indicator { display: none; }
+}
 
 .stepper { display: flex; align-items: center; gap: var(--spacing-sm); }
 .step-item { display: flex; align-items: center; gap: var(--spacing-xs); }
@@ -252,6 +383,27 @@ body {
 .step-item.active .step-circle { background: var(--primary); border-color: var(--primary); color: #fff; }
 .step-label { font-size: var(--font-size-sm); color: var(--text-muted); }
 .step-item.active .step-label { color: var(--primary); font-weight: 700; }
+
+/* ── Admin Topbar ──────────────────────────────────────────────── */
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: 10px var(--spacing-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-topbar__title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 
 .login-card { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--border-radius-md); padding: var(--spacing-xl); box-shadow: none; }
 .login-title { font-size: var(--font-size-2xl); margin: 0; }

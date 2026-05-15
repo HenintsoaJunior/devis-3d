@@ -253,9 +253,9 @@ export default function DevisPage() {
                   <Button
                     type="submit"
                     onClick={() => setContactSubmitAttempted(true)}
-                    disabled={formState.isSubmitting}
+                    loading={formState.isSubmitting}
                   >
-                    {formState.isSubmitting ? "Envoi..." : "Envoyer"}
+                    Envoyer
                   </Button>
                 )}
               </div>

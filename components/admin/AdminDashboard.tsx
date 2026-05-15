@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Pagination } from "@/components/ui/Pagination";
 import { Select } from "@/components/ui/Select";
 import { useDebounce } from "@/hooks/use-debounce";
 
@@ -92,6 +93,19 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
 
   return (
     <div style={{ display: "grid", gap: "var(--spacing-md)" }}>
+      {/* ── Topbar ── */}
+      <div className="admin-topbar">
+        <Button type="button" variant="danger" size="sm" onClick={logout}>
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <path d="M16 17l5-5-5-5" />
+            <path d="M21 12H9" />
+          </svg>
+          Déconnexion
+        </Button>
+      </div>
+
+      {/* ── Filters ── */}
       <div className="card filters-section">
         <div className="filters-grid">
           <div className="filter-group">
@@ -114,14 +128,6 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
               <path d="M12 15V3" />
             </svg>
             Exporter CSV
-          </Button>
-          <Button className="filter-action btn-sm" type="button" variant="danger" onClick={logout}>
-            <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <path d="M16 17l5-5-5-5" />
-              <path d="M21 12H9" />
-            </svg>
-            Deconnexion
           </Button>
         </div>
       </div>
@@ -162,14 +168,17 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
         </table>
       </div>
 
-      <div className="pagination-section">
-        <span className="page-info">{filtered.length} resultats</span>
-        <div className="pagination-buttons">
-          <button className="page-btn" disabled={clampedPage <= 1} onClick={() => { const next = new URLSearchParams(searchParams.toString()); next.set("page", String(clampedPage - 1)); router.replace(`/admin?${next.toString()}`); }}>←</button>
-          <button className="page-btn active">{clampedPage}</button>
-          <button className="page-btn" disabled={clampedPage >= totalPages} onClick={() => { const next = new URLSearchParams(searchParams.toString()); next.set("page", String(clampedPage + 1)); router.replace(`/admin?${next.toString()}`); }}>→</button>
-        </div>
-      </div>
+      <Pagination
+        currentPage={clampedPage}
+        totalPages={totalPages}
+        totalItems={filtered.length}
+        pageSize={pageSize}
+        onPageChange={(page) => {
+          const next = new URLSearchParams(searchParams.toString());
+          next.set("page", String(page));
+          router.replace(`/admin?${next.toString()}`);
+        }}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { ComponentProps } from "react";
 
-type ButtonProps = ComponentProps<"button"> & {
+type ButtonProps = Omit<ComponentProps<"button">, "loading"> & {
   variant?: "primary" | "secondary" | "outline-primary" | "danger" | "success";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
