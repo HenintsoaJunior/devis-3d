@@ -120,7 +120,7 @@ body {
   border: 2px solid rgba(255, 255, 255, 0.35);
   border-top-color: #fff;
   border-radius: 50%;
-  animation: btn-spin 0.65s linear infinite;
+  animation: btn-spin 0.9s linear infinite;
   flex-shrink: 0;
 }
 
