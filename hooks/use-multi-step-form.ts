@@ -16,6 +16,10 @@ export function useMultiStepForm(steps: React.ReactNode[]) {
     setCurrentStepIndex((index) => Math.max(index - 1, 0));
   }
 
+  function reset() {
+    setCurrentStepIndex(0);
+  }
+
   return {
     currentStepIndex,
     step,
@@ -23,5 +27,6 @@ export function useMultiStepForm(steps: React.ReactNode[]) {
     isLastStep,
     next,
     back,
+    reset,
   };
 }

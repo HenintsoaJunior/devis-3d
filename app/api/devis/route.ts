@@ -33,7 +33,9 @@ export async function POST(request: Request) {
 
     if (!rl.ok && (rl as { limited?: boolean }).limited) {
       return NextResponse.json(
-        { error: "Trop de soumissions, réessayez plus tard" },
+        {
+          error: "Limite atteinte: maximum 3 demandes par heure. Réessayez dans environ 1 heure.",
+        },
         { status: 429 }
       );
     }

@@ -2,17 +2,17 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center p-6">
-      <h1 className="text-3xl font-semibold">Devis App</h1>
-      <p className="mt-2 text-neutral-600">Module de demande de devis pour agence de desinfection/deratisation.</p>
-      <div className="mt-6 flex gap-3">
-        <Link href="/devis" className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800">
-          Faire une demande
-        </Link>
-        <Link href="/admin" className="rounded-md border border-neutral-300 px-4 py-2 text-sm font-medium hover:bg-neutral-50">
-          Back-office
-        </Link>
-      </div>
+    <main className="page-container" style={{ display: "grid", placeItems: "center", minHeight: "75vh" }}>
+      <section className="card" style={{ width: "100%", maxWidth: 760, padding: "var(--spacing-xl)" }}>
+        <h1 style={{ margin: 0, fontSize: "var(--font-size-3xl)", color: "var(--brand-primary)" }}>Devis App</h1>
+        <p style={{ margin: "var(--spacing-sm) 0 var(--spacing-lg)", color: "var(--text-muted)" }}>
+          Module de demande de devis pour agence de desinfection et deratisation.
+        </p>
+        <div style={{ display: "flex", gap: "var(--spacing-sm)", flexWrap: "wrap" }}>
+          <Link href="/devis" className="btn btn-primary">Faire une demande</Link>
+          <Link href="/admin" className="btn btn-outline-primary">Back-office</Link>
+        </div>
+      </section>
     </main>
   );
 }

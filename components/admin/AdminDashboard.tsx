@@ -22,6 +22,12 @@ type DevisRow = {
   statut: "nouveau" | "traite" | "archive";
 };
 
+function statusBadge(statut: DevisRow["statut"]) {
+  if (statut === "traite") return "badge badge-success";
+  if (statut === "archive") return "badge badge-neutral";
+  return "badge badge-info";
+}
+
 export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -68,9 +74,7 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
   function exportCsv() {
     const header = ["id", "date", "nom", "email", "etablissement", "statut"];
     const lines = filtered.map((r) => [r.id, r.created_at, r.nom, r.email, r.etablissement, r.statut]);
-    const csv = [header, ...lines]
-      .map((line) => line.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
-      .join("\n");
+    const csv = [header, ...lines].map((line) => line.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
 
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -87,55 +91,63 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 md:flex-row">
-        <Input
-          placeholder="Rechercher par nom ou email"
-          value={q}
-          onChange={(e) => {
-            setQ(e.target.value);
-            setParam("q", e.target.value);
-          }}
-        />
-        <Select
-          value={status}
-          onChange={(e) => {
-            setStatus(e.target.value);
-            setParam("statut", e.target.value === "all" ? "" : e.target.value);
-          }}
-        >
-          <option value="all">Tous</option>
-          <option value="nouveau">Nouveau</option>
-          <option value="traite">Traite</option>
-          <option value="archive">Archive</option>
-        </Select>
-        <Button type="button" variant="secondary" onClick={exportCsv}>Exporter CSV</Button>
-        <Button type="button" variant="secondary" onClick={logout}>Deconnexion</Button>
+    <div style={{ display: "grid", gap: "var(--spacing-md)" }}>
+      <div className="card filters-section">
+        <div className="filters-grid">
+          <div className="filter-group">
+            <label>Recherche</label>
+            <Input placeholder="Nom ou email" value={q} onChange={(e) => { setQ(e.target.value); setParam("q", e.target.value); }} />
+          </div>
+          <div className="filter-group">
+            <label>Statut</label>
+            <Select value={status} onChange={(e) => { setStatus(e.target.value); setParam("statut", e.target.value === "all" ? "" : e.target.value); }}>
+              <option value="all">Tous</option>
+              <option value="nouveau">Nouveau</option>
+              <option value="traite">Traite</option>
+              <option value="archive">Archive</option>
+            </Select>
+          </div>
+          <Button className="filter-action btn-success btn-sm" type="button" variant="primary" onClick={exportCsv}>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <path d="M7 10l5 5 5-5" />
+              <path d="M12 15V3" />
+            </svg>
+            Exporter CSV
+          </Button>
+          <Button className="filter-action btn-sm" type="button" variant="danger" onClick={logout}>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <path d="M16 17l5-5-5-5" />
+              <path d="M21 12H9" />
+            </svg>
+            Deconnexion
+          </Button>
+        </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-neutral-200">
-        <table className="min-w-full text-sm">
-          <thead className="bg-neutral-50">
+      <div className="professional-container">
+        <table className="professional-table">
+          <thead>
             <tr>
-              <th className="px-3 py-2 text-left">Date</th>
-              <th className="px-3 py-2 text-left">Nom</th>
-              <th className="px-3 py-2 text-left">Email</th>
-              <th className="px-3 py-2 text-left">Etablissement</th>
-              <th className="px-3 py-2 text-left">Statut</th>
+              <th>Date</th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Etablissement</th>
+              <th>Statut</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {pageRows.map((row) => (
-              <tr key={row.id} className="border-t border-neutral-200">
-                <td className="px-3 py-2">{new Date(row.created_at).toLocaleString()}</td>
-                <td className="px-3 py-2">{row.nom}</td>
-                <td className="px-3 py-2">{row.email}</td>
-                <td className="px-3 py-2">{row.etablissement}</td>
-                <td className="px-3 py-2">
-                  <Select
-                    value={row.statut}
-                    onChange={(e) => updateStatus(row.id, e.target.value as DevisRow["statut"])}
-                  >
+              <tr key={row.id}>
+                <td>{new Date(row.created_at).toLocaleString()}</td>
+                <td>{row.nom}</td>
+                <td>{row.email}</td>
+                <td>{row.etablissement}</td>
+                <td><span className={statusBadge(row.statut)}>{row.statut}</span></td>
+                <td>
+                  <Select value={row.statut} onChange={(e) => updateStatus(row.id, e.target.value as DevisRow["statut"])}>
                     <option value="nouveau">Nouveau</option>
                     <option value="traite">Traite</option>
                     <option value="archive">Archive</option>
@@ -144,41 +156,18 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
               </tr>
             ))}
             {pageRows.length === 0 && (
-              <tr>
-                <td className="px-3 py-8 text-center text-neutral-500" colSpan={5}>Aucun resultat</td>
-              </tr>
+              <tr><td colSpan={6} style={{ textAlign: "center", color: "var(--text-muted)" }}>Aucun resultat</td></tr>
             )}
           </tbody>
         </table>
       </div>
 
-      <div className="flex items-center justify-between text-sm">
-        <span>Page {clampedPage} / {totalPages}</span>
-        <div className="flex gap-2">
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={clampedPage <= 1}
-            onClick={() => {
-              const next = new URLSearchParams(searchParams.toString());
-              next.set("page", String(clampedPage - 1));
-              router.replace(`/admin?${next.toString()}`);
-            }}
-          >
-            Precedent
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={clampedPage >= totalPages}
-            onClick={() => {
-              const next = new URLSearchParams(searchParams.toString());
-              next.set("page", String(clampedPage + 1));
-              router.replace(`/admin?${next.toString()}`);
-            }}
-          >
-            Suivant
-          </Button>
+      <div className="pagination-section">
+        <span className="page-info">{filtered.length} resultats</span>
+        <div className="pagination-buttons">
+          <button className="page-btn" disabled={clampedPage <= 1} onClick={() => { const next = new URLSearchParams(searchParams.toString()); next.set("page", String(clampedPage - 1)); router.replace(`/admin?${next.toString()}`); }}>←</button>
+          <button className="page-btn active">{clampedPage}</button>
+          <button className="page-btn" disabled={clampedPage >= totalPages} onClick={() => { const next = new URLSearchParams(searchParams.toString()); next.set("page", String(clampedPage + 1)); router.replace(`/admin?${next.toString()}`); }}>→</button>
         </div>
       </div>
     </div>

@@ -1,26 +1,44 @@
 import { ComponentProps } from "react";
 
 type ButtonProps = ComponentProps<"button"> & {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "outline-primary" | "danger" | "success";
+  size?: "sm" | "md" | "lg";
+  loading?: boolean;
 };
 
 export function Button({
   className,
   variant = "primary",
+  size = "md",
+  loading = false,
+  disabled,
+  children,
   ...props
 }: ButtonProps) {
   return (
     <button
       {...props}
+      disabled={disabled || loading}
       className={[
-        "inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
-        variant === "primary"
-          ? "bg-black text-white hover:bg-neutral-800 focus-visible:outline-black"
-          : "border border-neutral-300 text-neutral-900 hover:bg-neutral-50 focus-visible:outline-neutral-400",
+        "btn",
+        variant === "primary" && "btn-primary",
+        variant === "secondary" && "btn-secondary",
+        variant === "outline-primary" && "btn-outline-primary",
+        variant === "danger" && "btn-danger",
+        variant === "success" && "btn-success",
+        size === "sm" && "btn-sm",
+        size === "lg" && "btn-lg",
+        loading && "btn-loading",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
-    />
+    >
+      {loading ? (
+        <span className="btn-spinner" />
+      ) : (
+        children
+      )}
+    </button>
   );
 }
