@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getAdminCookieName, getAdminSessionValue } from "@/lib/admin-auth";
+import { sendStatusUpdateEmail } from "@/lib/email";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
 
 const allowedStatus = new Set(["nouveau", "traite", "archive"]);
@@ -28,6 +29,18 @@ export async function PATCH(request: Request, context: Context) {
 
   const { id } = await context.params;
 
+  // 1. Récupérer les infos actuelles pour l'email
+  const { data: currentDevis } = await getSupabaseAdmin()
+    .from("devis")
+    .select("email, nom, etablissement, statut")
+    .eq("id", id)
+    .single();
+
+  if (!currentDevis) {
+    return NextResponse.json({ error: "Devis non trouvé" }, { status: 404 });
+  }
+
+  // 2. Mettre à jour le statut
   const { error } = await getSupabaseAdmin()
     .from("devis")
     .update({ statut: body.statut })
@@ -35,6 +48,17 @@ export async function PATCH(request: Request, context: Context) {
 
   if (error) {
     return NextResponse.json({ error: "Erreur mise à jour" }, { status: 500 });
+  }
+
+  // 3. Envoyer l'email si le statut a changé
+  if (currentDevis.statut !== body.statut) {
+    console.log(`[Email] Envoi de notification de changement de statut (${body.statut}) à ${currentDevis.email}`);
+    sendStatusUpdateEmail({
+      email: currentDevis.email,
+      nom: currentDevis.nom,
+      etablissement: currentDevis.etablissement,
+      nouveauStatut: body.statut,
+    }).catch((err) => console.error("Update email error:", err));
   }
 
   return NextResponse.json({ ok: true });

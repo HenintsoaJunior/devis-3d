@@ -29,6 +29,12 @@ function statusBadge(statut: DevisRow["statut"]) {
   return "badge badge-info";
 }
 
+function statusLabel(statut: DevisRow["statut"]) {
+  if (statut === "traite") return "Traité";
+  if (statut === "archive") return "Archivé";
+  return "Nouveau";
+}
+
 export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -117,8 +123,8 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
             <Select value={status} onChange={(e) => { setStatus(e.target.value); setParam("statut", e.target.value === "all" ? "" : e.target.value); }}>
               <option value="all">Tous</option>
               <option value="nouveau">Nouveau</option>
-              <option value="traite">Traite</option>
-              <option value="archive">Archive</option>
+              <option value="traite">Traité</option>
+              <option value="archive">Archivé</option>
             </Select>
           </div>
           <Button className="filter-action btn-success btn-sm" type="button" variant="primary" onClick={exportCsv}>
@@ -155,18 +161,18 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
                 <td>{row.etablissement}</td>
                 <td>{row.nuisibles.join(", ")}</td>
                 <td>{row.urgence}</td>
-                <td><span className={statusBadge(row.statut)}>{row.statut}</span></td>
+                <td><span className={statusBadge(row.statut)}>{statusLabel(row.statut)}</span></td>
                 <td>
                   <Select value={row.statut} onChange={(e) => updateStatus(row.id, e.target.value as DevisRow["statut"])}>
                     <option value="nouveau">Nouveau</option>
-                    <option value="traite">Traite</option>
-                    <option value="archive">Archive</option>
+                    <option value="traite">Traité</option>
+                    <option value="archive">Archivé</option>
                   </Select>
                 </td>
               </tr>
             ))}
             {pageRows.length === 0 && (
-              <tr><td colSpan={8} style={{ textAlign: "center", color: "var(--text-muted)" }}>Aucun resultat</td></tr>
+              <tr><td colSpan={8} style={{ textAlign: "center", color: "var(--text-muted)" }}>Aucun résultat</td></tr>
             )}
           </tbody>
         </table>

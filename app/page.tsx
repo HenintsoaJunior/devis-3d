@@ -1,18 +1,20 @@
-import Link from "next/link";
+import DevisForm from "@/components/devis/DevisForm";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <main className="page-container" style={{ display: "grid", placeItems: "center", minHeight: "75vh" }}>
-      <section className="card" style={{ width: "100%", maxWidth: 760, padding: "var(--spacing-xl)" }}>
-        <h1 style={{ margin: 0, fontSize: "var(--font-size-3xl)", color: "var(--brand-primary)" }}>Devis App</h1>
-        <p style={{ margin: "var(--spacing-sm) 0 var(--spacing-lg)", color: "var(--text-muted)" }}>
-          Module de demande de devis pour agence de desinfection et deratisation.
-        </p>
-        <div style={{ display: "flex", gap: "var(--spacing-sm)", flexWrap: "wrap" }}>
-          <Link href="/devis" className="btn btn-primary">Faire une demande</Link>
-          <Link href="/admin" className="btn btn-outline-primary">Back-office</Link>
+    <div className="h-screen bg-slate-50 flex flex-col font-sans overflow-hidden">
+      
+      {/* ── Contenu Principal : Formulaire parfaitement centré ── */}
+      <main className="flex-1 flex items-center justify-center p-4">
+        <div className="w-full max-w-xl animate-in fade-in zoom-in duration-700">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">EXPERT HYGIÈNE 3D</h1>
+            <p className="text-xs text-slate-500 font-medium mt-1">Demandez votre devis gratuit en 2 minutes</p>
+          </div>
+          <DevisForm />
         </div>
-      </section>
-    </main>
+      </main>
+
+    </div>
   );
 }

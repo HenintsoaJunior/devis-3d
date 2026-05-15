@@ -1,19 +1,39 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { checkRateLimit } from "@/lib/rate-limit";
+import { sendConfirmationEmail } from "@/lib/email";
 import { sanitizeText } from "@/lib/sanitize";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
 import { devisSchema } from "@/validators/devis";
 
-function getClientIp(request: Request) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) {
-    return forwarded.split(",")[0]?.trim() ?? "unknown";
+function getClientIp(request: NextRequest) {
+  const cfIp = request.headers.get("cf-connecting-ip");
+  if (cfIp) return normalizeIp(cfIp);
+
+  const xForwardedFor = request.headers.get("x-forwarded-for");
+  if (xForwardedFor) {
+    const firstIp = xForwardedFor.split(",")[0]?.trim();
+    if (firstIp) return normalizeIp(firstIp);
   }
-  return "unknown";
+
+  const xRealIp = request.headers.get("x-real-ip");
+  if (xRealIp) return normalizeIp(xRealIp.trim());
+
+  const requestIp = (request as any).ip;
+  if (requestIp) return normalizeIp(requestIp);
+
+  return "127.0.0.1";
 }
 
-export async function POST(request: Request) {
+function normalizeIp(ip: string) {
+  if (ip === "::1") return "127.0.0.1";
+  if (ip.startsWith("::ffff:")) {
+    return ip.replace("::ffff:", "");
+  }
+  return ip;
+}
+
+export async function POST(request: NextRequest) {
   try {
     let body: unknown;
 
@@ -62,6 +82,12 @@ export async function POST(request: Request) {
     if (error) {
       return NextResponse.json({ error: "Erreur insertion" }, { status: 500 });
     }
+
+    sendConfirmationEmail({
+      email: clean.email,
+      nom: clean.nom,
+      etablissement: clean.etablissement,
+    }).catch((err) => console.error("Email error:", err));
 
     return NextResponse.json({ id: data.id });
   } catch (error) {

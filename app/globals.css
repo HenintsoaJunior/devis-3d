@@ -69,7 +69,7 @@ body {
 .page-container {
   max-width: 1120px;
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-md);
+  padding: var(--spacing-3xl) var(--spacing-md) var(--spacing-xl);
 }
 
 .card {
