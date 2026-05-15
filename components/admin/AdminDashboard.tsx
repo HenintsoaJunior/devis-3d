@@ -73,8 +73,8 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
   }
 
   function exportCsv() {
-    const header = ["id", "date", "nom", "email", "etablissement", "statut"];
-    const lines = filtered.map((r) => [r.id, r.created_at, r.nom, r.email, r.etablissement, r.statut]);
+    const header = ["id", "date", "nom", "email", "etablissement", "nuisibles", "urgence", "statut"];
+    const lines = filtered.map((r) => [r.id, r.created_at, r.nom, r.email, r.etablissement, r.nuisibles.join(" | "), r.urgence, r.statut]);
     const csv = [header, ...lines].map((line) => line.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
 
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -140,8 +140,10 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
               <th>Nom</th>
               <th>Email</th>
               <th>Etablissement</th>
+              <th>Nuisibles</th>
+              <th>Urgence</th>
               <th>Statut</th>
-              <th>Action</th>
+              <th style={{ minWidth: "125px" }}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -151,6 +153,8 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
                 <td>{row.nom}</td>
                 <td>{row.email}</td>
                 <td>{row.etablissement}</td>
+                <td>{row.nuisibles.join(", ")}</td>
+                <td>{row.urgence}</td>
                 <td><span className={statusBadge(row.statut)}>{row.statut}</span></td>
                 <td>
                   <Select value={row.statut} onChange={(e) => updateStatus(row.id, e.target.value as DevisRow["statut"])}>
@@ -162,7 +166,7 @@ export function AdminDashboard({ initialData }: { initialData: DevisRow[] }) {
               </tr>
             ))}
             {pageRows.length === 0 && (
-              <tr><td colSpan={6} style={{ textAlign: "center", color: "var(--text-muted)" }}>Aucun resultat</td></tr>
+              <tr><td colSpan={8} style={{ textAlign: "center", color: "var(--text-muted)" }}>Aucun resultat</td></tr>
             )}
           </tbody>
         </table>
