@@ -27,12 +27,11 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
 
       if (!response.ok) {
         setError("Mot de passe invalide");
-        setLoading(false); // On arrête le chargement seulement en cas d'erreur
+        setLoading(false);
         return;
       }
 
-      // On redirige vers /admin en premier lieu comme demandé
-      router.push("/admin");
+      window.location.href = "/admin";
     } catch (err) {
       setError("Une erreur est survenue");
       setLoading(false);
