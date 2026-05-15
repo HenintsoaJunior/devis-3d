@@ -25,14 +25,14 @@ Copiez le fichier `.env.example` en `.env.local` et remplissez les variables sui
 
 ```env
 # Supabase configuration
-NEXT_PUBLIC_SUPABASE_URL=https://demo-project.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_demoKey123456
+NEXT_PUBLIC_SUPABASE_URL=https://test.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=NPSPK_demoApiKey123
 
 # Public anonymous key
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.demoAnonKey
+NEXT_PUBLIC_SUPABASE_ANON_KEY=NPSAK_demoApiKey123
 
 # Server-side secret key
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.demoServiceRoleKey
+SUPABASE_SERVICE_ROLE_KEY=SSRK_demoApiKey123
 
 # Static admin token for protected API
 ADMIN_BEARER_TOKEN=demo-admin-token
